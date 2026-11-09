@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ceb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>For my langga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=Caveat:wght@500;600&family=Nunito:wght@400;600;700&display=swap">
+<style>
+:root{--bg1:#ffe9ee;--bg2:#f8c4d2;--accent:#a62c52;--ink:#3a1f2b;--paper:#fff8f6;--gold:#e8b04a;--rose:#d6336c;--muted:#85626f;--line:rgba(166,44,82,.16);--shadow:0 12px 30px rgba(120,30,60,.18);color-scheme:light;
+ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#26101c;--bg2:#4a1b33;--accent:#ff8fb1;--ink:#fbeaf0;--paper:#3a1a2b;--gold:#ffd27a;--rose:#ff8fb1;--muted:#d9aebd;--line:rgba(255,143,177,.2);color-scheme:dark}}
+:root[data-theme="dark"]{--bg1:#26101c;--bg2:#4a1b33;--accent:#ff8fb1;--ink:#fbeaf0;--paper:#3a1a2b;--gold:#ffd27a;--rose:#ff8fb1;--muted:#d9aebd;--line:rgba(255,143,177,.2);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100vh;background:linear-gradient(180deg,var(--bg1),var(--bg2)) fixed;color:var(--ink);font-family:Nunito,system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+h1,h2{font-family:"Great Vibes",Fraunces,Georgia,serif;font-weight:400;margin:0;line-height:1.15}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+[hidden]{display:none!important}
+.hearts{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.hearts span{position:absolute;bottom:-40px;color:var(--rose);opacity:0;animation:rise linear infinite}
+@keyframes rise{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:.45}100%{transform:translateY(-110vh) translateX(var(--dx));opacity:0}}
+canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:30}
+
+/* intro */
+#intro{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:24px;text-align:center}
+#intro h1{font-size:clamp(2.6rem,11vw,4.4rem);color:var(--rose)}
+.env{position:relative;width:min(86vw,360px);aspect-ratio:3/2;background:var(--paper);border:0;border-radius:10px;box-shadow:var(--shadow);padding:0;transition:transform .4s}
+.env:hover{transform:translateY(-4px) rotate(-1deg)}
+.env::before{content:"";position:absolute;inset:0;background:linear-gradient(to bottom right,transparent 49.5%,rgba(0,0,0,.08) 50%) left/50% 100% no-repeat,linear-gradient(to bottom left,transparent 49.5%,rgba(0,0,0,.08) 50%) right/50% 100% no-repeat;border-radius:10px}
+.flap{position:absolute;left:0;right:0;top:0;height:56%;background:var(--accent);clip-path:polygon(0 0,100% 0,50% 100%);border-radius:10px 10px 0 0;transform-origin:top;transition:transform .7s}
+.env.open .flap{transform:rotateX(180deg)}
+.seal{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:var(--rose);color:#fff;display:grid;place-items:center;font-size:1.5rem;box-shadow:0 3px 8px rgba(0,0,0,.3);animation:beat 1.4s infinite;transition:opacity .4s}
+.env.open .seal{opacity:0}
+@keyframes beat{0%,100%{scale:1}15%{scale:1.18}30%{scale:1}45%{scale:1.12}}
+.to{position:absolute;bottom:12%;width:100%;font-family:Caveat,cursive;font-size:1.6rem}
+.hint{color:var(--muted);margin:0}
+
+/* app shell */
+#app{position:relative;z-index:1;display:none;max-width:860px;margin:0 auto;padding:0 16px calc(96px + env(safe-area-inset-bottom,0px))}
+#app.show{display:block;animation:fade .8s both}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 4px;margin:0 -4px;background:linear-gradient(var(--bg1) 70%,transparent)}
+.top h2{font-size:1.9rem;color:var(--rose);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.theme{background:var(--paper);border:1px solid var(--line);border-radius:99px;padding:6px 13px;font-size:.9rem}
+.tabs{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));display:none;gap:4px;padding:6px;border-radius:99px;background:var(--paper);border:1px solid var(--line);box-shadow:var(--shadow);width:min(94vw,460px)}
+#app.show~.tabs{display:flex}
+.tab{flex:1;border:0;background:none;border-radius:99px;padding:9px 4px;font-weight:700;font-size:.82rem;color:var(--muted);display:flex;flex-direction:column;align-items:center;line-height:1.2;transition:.25s}
+.tab span{font-size:1.15rem}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--paper)}
+@media(min-width:760px){.tabs{bottom:auto;top:calc(12px + env(safe-area-inset-top,0px));width:auto;gap:6px}.tab{flex-direction:row;gap:7px;padding:9px 18px;font-size:.92rem}.top{justify-content:flex-end}.top h2{display:none}.theme{position:fixed;right:16px;top:calc(18px + env(safe-area-inset-top,0px));z-index:21}#app{padding-top:64px;padding-bottom:60px}}
+.panel{display:none;animation:fade .5s both}.panel.on{display:block}
+.head{text-align:center;margin:14px 0 22px}
+.head h2{font-size:clamp(2.1rem,7vw,3rem);color:var(--rose)}
+.head p{margin:4px 0 0;color:var(--muted)}
+
+/* letter */
+.paper{background:var(--paper);border-radius:8px;padding:clamp(22px,5vw,44px);box-shadow:var(--shadow);border:1px solid var(--line);background-image:repeating-linear-gradient(transparent 0 35px,var(--line) 35px 36px);background-position:0 18px}
+.paper p{font-family:Caveat,cursive;font-size:clamp(1.35rem,4.4vw,1.7rem);line-height:36px;margin:0 0 36px;opacity:0;transform:translateY(8px);transition:opacity .9s,transform .9s}
+.paper p.in{opacity:1;transform:none}
+.paper .sign{text-align:right;color:var(--accent);margin:0}
+
+/* drawers */
+.drawer{background:var(--paper);border:1px solid var(--line);border-radius:18px;margin-bottom:12px;box-shadow:0 6px 18px rgba(120,30,60,.1);overflow:hidden}
+.dh{width:100%;display:flex;align-items:center;gap:14px;padding:14px 16px;background:none;border:0;text-align:left}
+.ic{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--rose),var(--gold));color:#fff;font-size:1.2rem}
+.tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.tx b{font-family:Fraunces,Georgia,serif;font-weight:500;font-size:1.1rem}
+.tx small{color:var(--muted);font-size:.82rem}
+.chev{font-size:1.4rem;color:var(--accent);transition:transform .35s}
+.drawer.open .chev{transform:rotate(180deg)}
+.db{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s ease}
+.drawer.open .db{grid-template-rows:1fr}
+.db .in{overflow:hidden;min-height:0}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;padding:4px 14px 16px}
+.ph{position:relative;padding:0;border:0;border-radius:12px;overflow:hidden;aspect-ratio:3/4;background:var(--line);box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+.ph:hover img{transform:scale(1.07)}
+.ph span{position:absolute;inset:auto 0 0;padding:26px 8px 8px;font-family:Caveat,cursive;font-size:1.02rem;line-height:1.15;color:#fff;background:linear-gradient(transparent,rgba(40,5,20,.82));opacity:0;transition:opacity .3s;text-align:left}
+.ph:hover span,.ph:focus-visible span{opacity:1}
+@media(hover:none){.ph span{display:none}}
+@media(min-width:760px){.thumbs{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;padding:4px 18px 20px}}
+
+/* reasons */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.card{min-height:120px;border:2px solid var(--accent);border-radius:18px 4px 18px 4px;background:var(--paper);padding:14px;display:grid;place-items:center;font-weight:600;font-size:1.4rem;color:var(--rose);transition:.4s}
+.card.flip{background:var(--accent);color:var(--paper);font-size:1rem;box-shadow:0 8px 20px rgba(166,44,82,.3)}
+.count{text-align:center;color:var(--muted);font-size:.9rem;margin-top:14px}
+
+/* cake */
+.center{text-align:center}
+.cake{position:relative;width:220px;margin:70px auto 12px}
+.tier{height:46px;background:var(--rose);border-radius:10px 10px 4px 4px;position:relative}
+.tier::after{content:"";position:absolute;left:0;right:0;top:0;height:14px;background:var(--paper);border-radius:10px 10px 40% 40%/10px 10px 14px 14px}
+.base{height:50px;width:260px;margin:0 -20px;background:var(--gold);border-radius:6px 6px 14px 14px}
+.candles{position:absolute;top:-50px;left:0;right:0;display:flex;justify-content:space-around;padding:0 24px}
+.candle{width:34px;height:56px;border:0;background:none;padding:0;position:relative}
+.candle i{position:absolute;bottom:0;left:12px;width:10px;height:36px;background:var(--accent);border-radius:3px}
+.candle b{position:absolute;top:0;left:11px;width:12px;height:18px;background:radial-gradient(#fff6c8,var(--gold));border-radius:50% 50% 50% 50%/65% 65% 35% 35%;animation:fl .5s infinite alternate;transform-origin:bottom}
+.candle.out b{display:none}
+@keyframes fl{to{transform:scale(1.08,.92) rotate(3deg)}}
+#wish{min-height:3.2em;font-family:Fraunces,Georgia,serif;font-style:italic;font-size:1.35rem;color:var(--rose);margin-top:18px}
+.btn{margin-top:14px;background:var(--accent);color:var(--paper);border:0;border-radius:99px;padding:10px 22px;box-shadow:0 6px 16px rgba(166,44,82,.3)}
+.promise-note{max-width:480px;margin:16px auto 0;padding:18px;border:1px dashed var(--rose);border-radius:18px;background:var(--paper);font-family:Caveat,cursive;font-size:1.4rem;color:var(--rose);text-align:center}
+footer{text-align:center;color:var(--muted);margin-top:34px;font-size:.9rem}
+
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:40;display:grid;grid-template-rows:1fr auto;place-items:center;padding:calc(56px + env(safe-area-inset-top,0px)) 12px calc(14px + env(safe-area-inset-bottom,0px));background:rgba(22,8,16,.92)}
+.lb img{max-width:100%;max-height:100%;min-height:0;border-radius:10px;box-shadow:0 18px 50px #0008;object-fit:contain}
+.lb figure{margin:0;display:contents}
+.lb figcaption{color:#ffd6e0;font-family:Caveat,cursive;font-size:1.5rem;text-align:center;padding:10px 56px 0;max-width:640px}
+.lb button{position:absolute;border:1px solid #fff5;border-radius:99px;background:#2a1020cc;color:#fff;width:44px;height:44px;font-size:1.3rem}
+.lb .x{top:calc(10px + env(safe-area-inset-top,0px));right:12px}
+.lb .pv{left:8px;top:50%}.lb .nx{right:8px;top:50%}
+.lb .n{position:absolute;top:calc(18px + env(safe-area-inset-top,0px));left:16px;color:#fff;font-size:.9rem}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="hearts" id="hearts" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<section id="intro">
+  <h1 id="title"></h1>
+  <button class="env" id="env" aria-label="Open the letter"><span class="flap"></span><span class="seal">♥</span><span class="to" id="to"></span></button>
+  <p class="hint">Tap the envelope to open</p>
+</section>
+
+<main id="app">
+  <header class="top"><h2 id="apptitle"></h2><button class="theme" id="theme" aria-label="Switch light or dark">☾</button></header>
+
+  <section class="panel on" id="p-letter" role="tabpanel">
+    <article class="paper" id="paper"></article>
+  </section>
+
+  <section class="panel" id="p-photos" role="tabpanel">
+    <div class="head"><h2>Ang akong paborito nga tan-awon</h2><p>Tap an album to open it, then tap a photo to see it bigger.</p></div>
+    <section class="drawer open">
+<button class="dh" type="button" aria-expanded="true" aria-controls="d0"><span class="ic">♥</span><span class="tx"><b>Ikaw ug Ako</b><small>Ang atong mga higayon, tanan akong kaluwasan. · 8 litrato</small></span><span class="chev">⌄</span></button>
+<div class="db" id="d0"><div class="in"><div class="thumbs"><button class="ph" type="button" data-f="KgnnjYuF.webp" aria-label="Buksan ang litrato"><img src="img/KgnnjYuF.webp" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Ikaw ug ako — akong paboritong team, sa katawa ug sa tanang adlaw. ♥</span></button><button class="ph" type="button" data-f="mZFLwDFY.webp" aria-label="Buksan ang litrato"><img src="img/mZFLwDFY.webp" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Duol ra ka, kalma na akong kalibutan. Mao gyud na akong paborito nga lugar.</span></button><button class="ph" type="button" data-f="TxjSYbRH.webp" aria-label="Buksan ang litrato"><img src="img/TxjSYbRH.webp" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Usa ka frame, daghang rason nga mopahiyom. Ikaw gihapon ang akong paborito.</span></button><button class="ph" type="button" data-f="s-Mb8XoI.webp" aria-label="Buksan ang litrato"><img src="img/s-Mb8XoI.webp" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Bisan simple nga higayon, espesyal basta ikaw ang akong kauban.</span></button><button class="ph" type="button" data-f="2pRi5Ive.webp" aria-label="Buksan ang litrato"><img src="img/2pRi5Ive.webp" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Bisan unsaon nimo pagtan-aw, ikaw gihapon ang pinakanindot nako nakita.</span></button><button class="ph" type="button" data-f="MMgstKz6.jpg" aria-label="Buksan ang litrato"><img src="img/MMgstKz6.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Daghang kiliti, daghang tabsi — ang akong paboritong collage sa imong kasadya.</span></button><button class="ph" type="button" data-f="nKpRmzA5.jpg" aria-label="Buksan ang litrato"><img src="img/nKpRmzA5.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Sama ka sa usa ka polaroid — gitipigan ko ka sa akong kasingkasing hangtod hangtod.</span></button><button class="ph" type="button" data-f="ZKE2GZI5.jpg" aria-label="Buksan ang litrato"><img src="img/ZKE2GZI5.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Hangtod sa katapusan, ikaw ra gihapon ang akong pili-on. ♥</span></button></div></div></div></section><section class="drawer">
+<button class="dh" type="button" aria-expanded="false" aria-controls="d1"><span class="ic">☺</span><span class="tx"><b>Mga Ngisi ug Kalingaw</b><small>Ang imong kasadya, akong paboritong tunog. · 10 litrato</small></span><span class="chev">⌄</span></button>
+<div class="db" id="d1"><div class="in"><div class="thumbs"><button class="ph" type="button" data-f="-wW7fIz6.jpg" aria-label="Buksan ang litrato"><img src="img/-wW7fIz6.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Ang imong pagka-sweet, akong paboritong eh feel nga dili nako gusto mawala ug mausob.</span></button><button class="ph" type="button" data-f="72spTkPk.jpg" aria-label="Buksan ang litrato"><img src="img/72spTkPk.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Kining pagka-lahi nimo, mao ang gihigugma nako pag-ayo.</span></button><button class="ph" type="button" data-f="8WRTcJbh.jpg" aria-label="Buksan ang litrato"><img src="img/8WRTcJbh.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Peace sign nimo, kasing-kalma sa akong kasingkasing kung naa ka.</span></button><button class="ph" type="button" data-f="hcoVinqK.jpg" aria-label="Buksan ang litrato"><img src="img/hcoVinqK.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Duol na kaayo, pero dili gihapon igo para sa akong gugma.</span></button><button class="ph" type="button" data-f="NXH9vhdH.jpg" aria-label="Buksan ang litrato"><img src="img/NXH9vhdH.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Kining imong ngisi mao ang akong paborito nga alaala.</span></button><button class="ph" type="button" data-f="Il-wFcfq.jpg" aria-label="Buksan ang litrato"><img src="img/Il-wFcfq.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Kung ang gugma usa ka lugar, ang imong kiliti akong gipauli-an.</span></button><button class="ph" type="button" data-f="g-Vd2-gH.jpg" aria-label="Buksan ang litrato"><img src="img/g-Vd2-gH.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Gamay nga kalibog, daghang gugma. Ingon ana ko nimo, Langga.</span></button><button class="ph" type="button" data-f="6OMrwEls.jpg" aria-label="Buksan ang litrato"><img src="img/6OMrwEls.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Tahom ra ka, pero nahilo ko sa kanindot nimo.</span></button><button class="ph" type="button" data-f="uSAIaax_.jpg" aria-label="Buksan ang litrato"><img src="img/uSAIaax_.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Ang imong kasadya, makatakod — ug malipay gyud ko kanunay.</span></button><button class="ph" type="button" data-f="H160jfPI.jpg" aria-label="Buksan ang litrato"><img src="img/H160jfPI.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Kini nga pose — akong kasingkasing nahulog na usab.</span></button></div></div></div></section><section class="drawer">
+<button class="dh" type="button" aria-expanded="false" aria-controls="d2"><span class="ic">✦</span><span class="tx"><b>Mga Mata, Mga Kahiyom</b><small>Kini nga mga mata, didto ko nahulog. · 10 litrato</small></span><span class="chev">⌄</span></button>
+<div class="db" id="d2"><div class="in"><div class="thumbs"><button class="ph" type="button" data-f="3.jpg" aria-label="Buksan ang litrato"><img src="img/3.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Naa kay gamay nga kahiyom nga makapahunong sa akong kalibutan.</span></button><button class="ph" type="button" data-f="4AGs-rkI.jpg" aria-label="Buksan ang litrato"><img src="img/4AGs-rkI.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Kini nga mga mata — didto ko nahulog, ug dili na gyud ko mobangon.</span></button><button class="ph" type="button" data-f="4iDnwclf.jpg" aria-label="Buksan ang litrato"><img src="img/4iDnwclf.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Ang imong ngisi, sikat pa sa adlaw sa buntag, Langga.</span></button><button class="ph" type="button" data-f="5pieSrue.jpg" aria-label="Buksan ang litrato"><img src="img/5pieSrue.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Ikaw ang akong pahulayan human sa tanang kakapoy.</span></button><button class="ph" type="button" data-f="SSV_ge0K.jpg" aria-label="Buksan ang litrato"><img src="img/SSV_ge0K.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Ang imong mga mata, ang akong paboritong langit nga ginatan-aw.</span></button><button class="ph" type="button" data-f="RDtmEs43.jpg" aria-label="Buksan ang litrato"><img src="img/RDtmEs43.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Kung ako pa ang camera, dili ko gayod mohunong sa pagkuha nimo.</span></button><button class="ph" type="button" data-f="Untitled.jpg" aria-label="Buksan ang litrato"><img src="img/Untitled.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Bisan sa wala nimo gipaningkamotan, ikaw ang pinakanindot.</span></button><button class="ph" type="button" data-f="Untitled1.jpg" aria-label="Buksan ang litrato"><img src="img/Untitled1.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Sa matag adlaw, ikaw ang akong ginapili ug ginapasalamatan.</span></button><button class="ph" type="button" data-f="fJOwiRIu.jpg" aria-label="Buksan ang litrato"><img src="img/fJOwiRIu.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Mutan-aw lang ko nimo, kompleto na akong adlaw.</span></button><button class="ph" type="button" data-f="oAWaCdfw.jpg" aria-label="Buksan ang litrato"><img src="img/oAWaCdfw.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Gamay nga litrato, pero dako kaayo nga gugma ang gisulod niini.</span></button></div></div></div></section><section class="drawer">
+<button class="dh" type="button" aria-expanded="false" aria-controls="d3"><span class="ic">☀</span><span class="tx"><b>Adlaw-adlaw nga Ikaw</b><small>Bisan ordinaryong adlaw, ikaw ang pinakanindot nga parte. · 9 litrato</small></span><span class="chev">⌄</span></button>
+<div class="db" id="d3"><div class="in"><div class="thumbs"><button class="ph" type="button" data-f="4.jpg" aria-label="Buksan ang litrato"><img src="img/4.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Bisan sa taliwala sa daghang tawo, ikaw ra akong makita.</span></button><button class="ph" type="button" data-f="5.jpg" aria-label="Buksan ang litrato"><img src="img/5.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Simple ra ka, pero ikaw ang pinakanindot nga tan-awon sa akong adlaw.</span></button><button class="ph" type="button" data-f="_EVd01jy.jpg" aria-label="Buksan ang litrato"><img src="img/_EVd01jy.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Bisan sa kapoy, ikaw gihapon ang pinakamanindot nga bulak sa akong tanaman.</span></button><button class="ph" type="button" data-f="FRBkHTJD.jpg" aria-label="Buksan ang litrato"><img src="img/FRBkHTJD.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Naa kay glasses, naa kay kaanyag — ikaw ang akong pinakamatalinong gugma.</span></button><button class="ph" type="button" data-f="IZkWw2Ob.jpg" aria-label="Buksan ang litrato"><img src="img/IZkWw2Ob.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Sa matag kanto sa atong balay, ikaw ang akong pinakanindot nga dekorasyon.</span></button><button class="ph" type="button" data-f="OVN0BTHl.jpg" aria-label="Buksan ang litrato"><img src="img/OVN0BTHl.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Ikaw ang akong pinakanindot nga sayo sa matag buntag.</span></button><button class="ph" type="button" data-f="pwpmOEE1.jpg" aria-label="Buksan ang litrato"><img src="img/pwpmOEE1.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Ang imong pagpahiyom — mao ang akong paboritong musika.</span></button><button class="ph" type="button" data-f="skDlUD-p.jpg" aria-label="Buksan ang litrato"><img src="img/skDlUD-p.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Gwapa ka sa tanang anggulo, Langga, labi na sa akong mata.</span></button><button class="ph" type="button" data-f="wJudPvrl.jpg" aria-label="Buksan ang litrato"><img src="img/wJudPvrl.jpg" alt="Litrato sa akong Langga" loading="lazy" decoding="async"><span>Ikaw ang akong gugma, akong paglaum, ug akong balay.</span></button></div></div></div></section>
+    <div class="center">
+      <button class="btn" id="promise" type="button" aria-expanded="false">Naay usa pa ka saad para nimo ♥</button>
+      <p class="promise-note" id="promiseNote" hidden>Sa matag birthday nimo, sa matag bag-ong sugod, ug sa matag ordinaryong adlaw — pilion tika pag-usab, Langga. Karon, ug sa tanang adlaw nga moabot. ♥</p>
+    </div>
+  </section>
+
+  <section class="panel" id="p-reasons" role="tabpanel">
+    <div class="head"><h2>Mga rason kung ngano nga mahal tika</h2><p>Tap each card to read it</p></div>
+    <div class="grid" id="grid"></div>
+    <p class="count" id="count"></p>
+  </section>
+
+  <section class="panel center" id="p-wish" role="tabpanel">
+    <div class="head"><h2>Make a wish, langga</h2><p>Blow out the candles by tapping each flame</p></div>
+    <div class="cake"><div class="candles" id="candles"></div><div class="tier"></div><div class="base"></div></div>
+    <div id="wish" aria-live="polite"></div>
+    <button class="btn" id="again" hidden>Light them again</button>
+  </section>
+  <footer id="foot"></footer>
+</main>
+
+<nav class="tabs" role="tablist" aria-label="Sections">
+  <button class="tab" role="tab" aria-selected="true" data-t="letter"><span>💌</span>Sulat</button>
+  <button class="tab" role="tab" aria-selected="false" data-t="photos"><span>📸</span>Litrato</button>
+  <button class="tab" role="tab" aria-selected="false" data-t="reasons"><span>💗</span>Rason</button>
+  <button class="tab" role="tab" aria-selected="false" data-t="wish"><span>🎂</span>Wish</button>
+</nav>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+  <span class="n" id="lbn"></span>
+  <button class="x" id="lbx" aria-label="Close">✕</button>
+  <button class="pv" id="lbp" aria-label="Previous photo">‹</button>
+  <button class="nx" id="lbnx" aria-label="Next photo">›</button>
+  <figure><img id="lbi" alt=""><figcaption id="lbc"></figcaption></figure>
+</div>
+
+<script>
+/* ====== EDIT THIS PART ====== */
+const CONFIG = {
+  name: "Langga",                 // her name or nickname
+  from: "Imong bana, nga kanunayng mopili nimo",
+  title: "Happy Birthday, akong Langga",
+  letter: [
+    "Akong Langga, akong asawa, ug akong pinakagihigugma,",
+    "Gusto lang nako ipahibalo nimo kung unsa ko ka thankful nga niabot ka sa akong kinabuhi. Sa tanan nga nahitabo sa akong kinabuhi, usa ka dakong blessing para nako nga nakaila ko nimo ug nahimo kang parte sa akong adlaw-adlaw nga kinabuhi. Gikan sa sinugdanan hangtod karon, wala gyud ko magmahay nga ikaw ang akong nahigugma. Grabe ko ka thankful sa Ginoo kay gihatag ka Niya sa akoa.",
+    "Langga, special kaayo ka sa akoa. Basin usahay dili nako masulti pirmi, pero gusto nako nga mahibaloan nimo nga dako kaayo kag lugar sa akong kasingkasing. Salamat sa imong gugma, sa imong pagsabot, sa imong pasensya, ug sa tanan nimong paningkamot para sa atoa. Salamat kay naa ka pirmi sa akong kinabuhi. Malipay ko nga ikaw akong kauban, akong kastorya, akong kapahulayan, ug akong love.",
+    "Sa imong birthday, akong ampo nga hatagan ka pa sa Ginoo og taas nga kinabuhi, maayong panglawas, kalipay, ug daghang blessings. Hinaot nga matuman ang imong mga pangandoy ug makab-ot nimo ang tanan nimong gusto sa kinabuhi. Ampo pud nako nga kanunay tang giya-an ug panalanginan sa Ginoo. Hinaot nga mas molig-on pa atong relasyon, mas molalom atong pagsinabtanay, ug dili ta kapuyon sa pagpili ug paghigugma sa usag usa.",
+    "Kabalo ko nga dili perpekto ang tanan ug naa gyud tay mga adlaw nga dili magkasinabot, pero gusto nako nga bisan unsa pa ang mahitabo, magpabilin tang magtinabangay ug maghigugmaay. Gusto nako nga mauban tika sa daghang birthdays pa, sa atong mga pangandoy, sa atong mga plano, ug sa atong kaugmaon.",
+    "Thank you for coming into my life, Langga. Ikaw usa sa pinakanindot nga nahitabo sa akong kinabuhi. Dili ko kabalo unsay eksaktong pulong para ma-express kung unsa tika ka love, pero usa ra akong masiguro, grateful kaayo ko nga ikaw akong nahimong asawa ug ikaw akong gihigugma.",
+    "I love you so much, Langga. Amping kanunay, God bless you always, and God bless our relationship. Happy Birthday, my love. Ikaw ra gihapon akong pili-on, karon ug sa tanang adlaw nga moabot. ♥"
+  ],
+  reasons: [
+    "Dako kaayo kag lugar sa akong kasingkasing",
+    "Salamat sa imong gugma, pagsabot, ug pasensya",
+    "Malipay ko nga ikaw akong kauban ug kastorya",
+    "Ikaw akong kapahulayan ug paboritong love",
+    "Nagpasalamat ko sa Ginoo kay gihatag ka Niya sa akoa",
+    "Bisan dili perpekto ang tanan, magtinabangay gihapon ta",
+    "Daghan pa kaayong birthdays ug pangandoy nga atong ipaambit",
+    "Ikaw ra gihapon akong pili-on, karon ug kanunay"
+  ],
+  wishes: "Hinaot matuman ang imong mga pangandoy, Langga. I love you so much. ♥"
+};
+/* ============================ */
+const $=id=>document.getElementById(id);
+$('title').textContent=CONFIG.title;$('apptitle').textContent="Para sa akong "+CONFIG.name;
+$('to').textContent="For my "+CONFIG.name.toLowerCase()+" ♥";
+document.title="For "+CONFIG.name;
+$('foot').textContent="Made with love by "+CONFIG.from+" ♥";
+
+// theme
+const root=document.documentElement;
+$('theme').onclick=()=>{const d=getComputedStyle(root).colorScheme==='dark';root.dataset.theme=d?'light':'dark';$('theme').textContent=d?'☾':'☀'};
+
+// hearts
+if(!matchMedia('(prefers-reduced-motion:reduce)').matches){for(let i=0;i<14;i++){const s=document.createElement('span');s.textContent='♥';s.style.left=Math.random()*100+'%';s.style.fontSize=(10+Math.random()*20)+'px';s.style.animationDuration=(9+Math.random()*10)+'s';s.style.animationDelay=(-Math.random()*14)+'s';s.style.setProperty('--dx',(Math.random()*80-40)+'px');$('hearts').appendChild(s)}}
+
+// tabs
+function show(t){
+  document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.t===t)));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id==='p-'+t));
+  scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>show(b.dataset.t));
+
+// envelope + letter
+$('env').onclick=function(){
+  if(this.classList.contains('open'))return;
+  this.classList.add('open');
+  const P=$('paper');
+  P.innerHTML='<h2 style="font-size:clamp(2.1rem,7vw,3rem);color:var(--rose);margin-bottom:16px">'+CONFIG.title+'</h2>'+CONFIG.letter.map(t=>'<p>'+t+'</p>').join('')+'<p class="sign">With all my love,<br>'+CONFIG.from+' ♥</p>';
+  setTimeout(()=>{
+    $('intro').style.display='none';$('app').classList.add('show');scrollTo(0,0);
+    [...P.querySelectorAll('p')].forEach((p,i)=>setTimeout(()=>p.classList.add('in'),400+i*550));
+  },900);
+};
+
+// drawers (one open at a time)
+document.querySelectorAll('.dh').forEach(h=>h.onclick=()=>{
+  const d=h.parentElement,was=d.classList.contains('open');
+  document.querySelectorAll('.drawer').forEach(x=>{x.classList.remove('open');x.querySelector('.dh').setAttribute('aria-expanded','false')});
+  if(!was){d.classList.add('open');h.setAttribute('aria-expanded','true');setTimeout(()=>d.scrollIntoView({behavior:'smooth',block:'nearest'}),460)}
+});
+
+// lightbox
+const items=[...document.querySelectorAll('.ph')];let cur=0,last;
+function openLb(i){cur=(i+items.length)%items.length;const b=items[cur];last=b;
+  $('lbi').src=b.querySelector('img').src;$('lbc').textContent=b.querySelector('span').textContent;
+  $('lbn').textContent=(cur+1)+' / '+items.length;$('lb').hidden=false;$('lbx').focus()}
+items.forEach((b,i)=>b.onclick=()=>openLb(i));
+const closeLb=()=>{$('lb').hidden=true;$('lbi').src='';last&&last.focus()};
+$('lbx').onclick=closeLb;$('lbp').onclick=()=>openLb(cur-1);$('lbnx').onclick=()=>openLb(cur+1);
+$('lb').onclick=e=>{if(e.target===$('lb'))closeLb()};
+addEventListener('keydown',e=>{if($('lb').hidden)return;if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')openLb(cur-1);if(e.key==='ArrowRight')openLb(cur+1)});
+let sx=null;$('lb').addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+$('lb').addEventListener('touchend',e=>{if(sx===null)return;const d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>50)openLb(cur+(d<0?1:-1));sx=null});
+
+// promise
+$('promise').onclick=()=>{const n=$('promiseNote');n.hidden=!n.hidden;$('promise').setAttribute('aria-expanded',String(!n.hidden));if(!n.hidden)burst(50)};
+
+// reasons
+let seen=0;const total=CONFIG.reasons.length;
+const upd=()=>$('count').textContent=seen+" of "+total+" read";
+CONFIG.reasons.forEach(r=>{const b=document.createElement('button');b.className='card';b.setAttribute('aria-pressed','false');b.textContent='♥';
+  b.onclick=()=>{if(b.classList.contains('flip'))return;b.classList.add('flip');b.setAttribute('aria-pressed','true');b.textContent=r;seen++;upd();if(seen===total)burst(70)};
+  $('grid').appendChild(b)});
+upd();
+
+// candles
+let lit=0;
+function light(){lit=5;$('candles').innerHTML='';$('wish').textContent='';$('again').hidden=true;
+  for(let i=0;i<5;i++){const c=document.createElement('button');c.className='candle';c.setAttribute('aria-label','Blow out candle '+(i+1));c.innerHTML='<i></i><b></b>';
+    c.onclick=()=>{if(c.classList.contains('out'))return;c.classList.add('out');lit--;if(!lit){$('wish').textContent=CONFIG.wishes;$('again').hidden=false;burst(160)}};
+    $('candles').appendChild(c)}}
+$('again').onclick=light;light();
+
+// confetti
+const cv=$('fx'),cx=cv.getContext('2d');let parts=[],run=false;
+const fit=()=>{cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio};addEventListener('resize',fit);fit();
+function burst(n){if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const cols=['#e8b04a','#d6336c','#a62c52','#ffd6e0','#ffffff'];
+  for(let i=0;i<n;i++)parts.push({x:Math.random()*cv.width,y:-20*devicePixelRatio,vx:(Math.random()-.5)*4,vy:Math.random()*4+3,s:(Math.random()*7+4)*devicePixelRatio,r:Math.random()*6,c:cols[i%5],life:0});
+  if(!run){run=true;requestAnimationFrame(tick)}}
+function tick(){cx.clearRect(0,0,cv.width,cv.height);parts=parts.filter(p=>p.y<cv.height+20&&p.life<400);
+  parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.03;p.r+=.1;p.life++;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);cx.restore()});
+  if(parts.length)requestAnimationFrame(tick);else run=false}
+</script>
+</body>
+</html>
